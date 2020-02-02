@@ -1,6 +1,7 @@
 # SmartFlow
 Android streaming response （Android 流式响应）
 ##### [English Read me](README-en.md)
+[![](https://www.jitpack.io/v/huangyanbin/SmartFlow.svg)](https://www.jitpack.io/#huangyanbin/SmartFlow)
 ### 原因
 在```Android```中，我们经常碰到异步方法嵌套。比如提交文件之后在提交表单，提交数据根据是否成功然后做出其他逻辑处理。```kotlin```里面提出协程概念，利用语法糖来解决这个问题。在```javaScript```里面也有```async/await```来使异步用起来像同步。而在```java```中（```java 9```以前），没有该特性，使得写起来异步嵌套感觉就是地狱。利用这春节几天时间，试图使这问题得到缓解，于是写了```Flow```小框子。
 ### 想法
@@ -159,7 +160,19 @@ Flow.condition2(() -> isGo, (FirstEvent<Integer>) (flow, await) -> {
   Flow.create((FirstEvent<Integer>) (flow, await) ->await.exec(0)) 
       .watch(this).start();
 ```
+### 使用
 
+
+```
+allprojects {
+		repositories {
+			...
+			maven { url 'https://www.jitpack.io' }
+		}
+	}
+	
+	implementation 'com.github.huangyanbin:SmartFlow:Tag'
+```
 
 ### 总结
 已经把```flow```引入实际项目中，框子也里面提供了一些简化的类，也可以和项目网络请求框架抽象自己的```Event```,这样和```js```的网络的```then```就几乎一样了。后续根据实际需求再做调整，试验中。

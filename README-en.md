@@ -1,6 +1,7 @@
 # SmartFlow
 Android streaming response 
 ##### [中文说明](README.md)
+[![](https://www.jitpack.io/v/huangyanbin/SmartFlow.svg)](https://www.jitpack.io/#huangyanbin/SmartFlow)
 ### Cause
 In Android, we often encounter asynchronous method nesting. For example, after submitting a file, submit a form, and then make other logical processing according to whether the data is successful or not. Kotlin puts forward the concept of CO process and uses grammar sugar to solve this problem. There is also async / await in JavaScript to make asynchrony work like synchronization. In Java (before Java 9), there is no such feature, which makes writing asynchronous nesting feel like hell. During the Spring Festival, I tried to alleviate the problem, so I wrote a flow box.
 ### Idea
@@ -159,6 +160,19 @@ Through the flow watch method. The observed must implement the ilifeobservable i
       .watch(this).start();
 ```
 
+### Use
+
+
+```
+allprojects {
+		repositories {
+			...
+			maven { url 'https://www.jitpack.io' }
+		}
+	}
+	
+	implementation 'com.github.huangyanbin:SmartFlow:Tag'
+```
 
 ### summary
 flow has been introduced into the actual project, which provides some simplified classes, and can also abstract its own Event with the project network request framework, which is almost the same as that of JS's then. Later, adjust according to the actual needs, in the test.
