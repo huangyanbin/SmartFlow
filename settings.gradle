@@ -1,0 +1,2 @@
+include ':app', ':flow'
+rootProject.name='EventTask'
