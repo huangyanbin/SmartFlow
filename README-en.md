@@ -1,16 +1,16 @@
 # SmartFlow
-Android streaming response （Android 流式响应）
-##### [English Read me](README-en.md)
-### 原因
-在```Android```中，我们经常碰到异步方法嵌套。比如提交文件之后在提交表单，提交数据根据是否成功然后做出其他逻辑处理。```kotlin```里面提出协程概念，利用语法糖来解决这个问题。在```javaScript```里面也有```async/await```来使异步用起来像同步。而在```java```中（```java 9```以前），没有该特性，使得写起来异步嵌套感觉就是地狱。利用这春节几天时间，试图使这问题得到缓解，于是写了```Flow```小框子。
-### 想法
-从生活中思考代码，方法嵌套和水流的原理很相似，我们把每个异步当成一个水管，水从一个个管道流过，每个管道可以对水进行加工转换。转换的这个过程我们当成一个事件```Event```。在包装事件中，我们可以对它进行线程转换，事件转换，合并拆分等一系列转换。如果碰到异常，则直接终止这个流。
+Android streaming response 
+##### [中文说明](README.md)
+### Cause
+In Android, we often encounter asynchronous method nesting. For example, after submitting a file, submit a form, and then make other logical processing according to whether the data is successful or not. Kotlin puts forward the concept of CO process and uses grammar sugar to solve this problem. There is also async / await in JavaScript to make asynchrony work like synchronization. In Java (before Java 9), there is no such feature, which makes writing asynchronous nesting feel like hell. During the Spring Festival, I tried to alleviate the problem, so I wrote a flow box.
+### Idea
+Thinking about code from life, the principle of method nesting and water flow is very similar. We treat each asynchrony as a water pipe, and water flows through each pipe, and each pipe can process and transform water. This process of transformation is regarded as an event. In the wrapper event, we can transform it by thread, event, merge and split. If an exception is encountered, the flow is terminated directly.
 
-### 功能
-###### 简单使用
-通过```Flow``` 静态```create```方法创建一个流，```then```串联下个流，如果不需要返回```Void```泛型。```Event```有两个泛型```P、R```,第一个是前个流```Flow```的返回值类型，第二个是当前流```Flow```返回类型。```await exec```方法是结束当前事件流，并将结果代入下个流。
+### Function
+###### Simple example
+Create a flow through the flow static create method, then concatenate the next flow, if you don't need to return the void generics. Event has two generics, P and R. the first is the return value type of the previous flow, and the second is the return type of the current flow. The await exec method is to end the current event flow and substitute the result into the next flow.
 
-> 打印两句话
+>Print two sentences
 
 ```
 Flow.create(new Event<Void,Void>() {
@@ -29,7 +29,7 @@ Flow.create(new Event<Void,Void>() {
                 }).start();
 ```
 
-> ```Lambda ```简化之后
+> Lambda simple
 
 ```
 Flow.create((NoneEvent) (flow, await) -> {
@@ -40,7 +40,7 @@ Flow.create((NoneEvent) (flow, await) -> {
                         await.exec();
                 }).start();
 ```
-> 两数相加
+> Addition of two numbers
 
 ```
  Flow.create((FirstEvent<Integer>) (flow, await) -> 
@@ -51,7 +51,7 @@ Flow.create((NoneEvent) (flow, await) -> {
                              System.out.println("total is"+result))
                      .start();
 ```
-```resultThen```方法返回是当前流的结果，每个```flow```后面使用```resultThen```都可以获取流的结果。如果遇到异常，可以通过```flow throwException```方法抛出，可以在```flow```后面```catchThen```立刻处理，也可以在最后```flow``` ```catchThen```处理。```finallyThen```是事件流结束一个通知。
+The resultthen method returns the result of the current flow, which can be obtained by using resultthen after each flow. If an exception is encountered, it can be thrown through the flow throwexception method. It can be processed immediately after the flow or at the end of the flow. Finally then is a notification that the event flow ends.
 
 
 ```
@@ -72,9 +72,8 @@ Flow.create((NoneEvent) (flow, await) -> {
                               System.out.println("this is flow end")).start();
 ```
 
-###### 切换线程
-
-使用```flow on```方法可以切换线程，```on```传递一个```Converter```参数，代表下个流切换。如果两个```Converter```参数，代表当前流和下个流都切换线程。当然你也可以实现```Converter```接口来实现其他功能。
+###### Switching thread
+Use the on method to switch threads. On passes a switch parameter, representing the next flow switch. If two parameters, it means that the current flow and the next flow switch threads. Of course, you can also implement the converter interface to achieve other functions.
 ```
 Flow.create((FirstEvent<Integer>) (flow, await) ->
                         await.exec(0))
@@ -97,7 +96,7 @@ Flow.create((FirstEvent<Integer>) (flow, await) ->
                               System.out.println("this is flow end")).start();
 ```
 
-###### ```Collection```结果转换成多个流
+###### The collection result is converted to multiple streams
 
 ```
 Flow.each((FirstEvent<List<String>>) (flow, await) -> {
@@ -110,7 +109,7 @@ Flow.each((FirstEvent<List<String>>) (flow, await) -> {
                     System.out.println("this is"+s);
                 }).start();
 ```
-###### 多个流结果转换成一个流
+###### Multiple stream results converted to one stream
 
 
 ```
@@ -120,8 +119,8 @@ Flow.each((FirstEvent<List<String>>) (flow, await) -> {
                         ->  System.out.println"result"+result)).start();
 ```
 
-###### 条件选择
-根据条件判断重新发起```Flow```流（返回参数可以不一样）
+###### condition selection
+Reinitiate flow flow according to condition judgment (return parameters can be different)
 
 ```
  Flow.create((NoneEvent) (flow,await) ->{
@@ -139,7 +138,7 @@ Flow.each((FirstEvent<List<String>>) (flow, await) -> {
                                     await.exec();
                                 })).start();
 ```
-根据条件判断执行```Flow```流，可以合并到一起。（返回参数必须一致）
+The flow flow is executed according to the condition judgment and can be combined. (return parameters must be consistent)
 ```
 Flow.condition2(() -> isGo, (FirstEvent<Integer>) (flow, await) -> {
                     System.out.println("this is true");
@@ -152,8 +151,8 @@ Flow.condition2(() -> isGo, (FirstEvent<Integer>) (flow, await) -> {
 ```
 
 
-###### 生命周期解绑
-通过```flow watch```方法。被观察者必须实现```ILifeObservable```接口。
+###### Lifecycle unbound
+Through the flow watch method. The observed must implement the ilifeobservable interface.
 
 ```
   Flow.create((FirstEvent<Integer>) (flow, await) ->await.exec(0)) 
@@ -161,6 +160,18 @@ Flow.condition2(() -> isGo, (FirstEvent<Integer>) (flow, await) -> {
 ```
 
 
-### 总结
-已经把```flow```引入实际项目中，框子也里面提供了一些简化的类，也可以和项目网络请求框架抽象自己的```Event```,这样和```js```的网络的```then```就几乎一样了。后续根据实际需求再做调整，试验中。
+### summary
+flow has been introduced into the actual project, which provides some simplified classes, and can also abstract its own Event with the project network request framework, which is almost the same as that of JS's then. Later, adjust according to the actual needs, in the test.
+
+
+
+
+
+
+
+
+
+
+
+
 
