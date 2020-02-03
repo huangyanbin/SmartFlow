@@ -30,14 +30,15 @@ Flow.create(new Event<Void,Void>() {
 ```
 
 > ```Lambda ```简化之后
+ 
 
+ 
 ```
 Flow.create((NoneEvent) (flow, await) -> {
                     System.out.println("this is first flow");
-                    await.exec(); 
+                   
                 }).then((NoneEvent) (flow, await) -> {
                         System.out.println("this is two flow");
-                        await.exec();
                 }).start();
 ```
 > 两数相加
@@ -172,6 +173,9 @@ allprojects {
 	
 	implementation 'com.github.huangyanbin:SmartFlow:Tag'
 ```
+
+ * 提供简化的类：FirstEvent 入参是Void省略类， LastEvent 返回值是Void省略类。
+VoidEvent入参和返回值都是Void省略类，NoneEvent和VoidEvent一样，但是不需要手动掉await
 
 ### 总结
 框子也里面提供了一些简化的类，也可以和项目网络请求框架抽象自己的```Event```,这样和```js```的网络的```then```就几乎一样了。后续根据实际需求再做调整，试验中。
