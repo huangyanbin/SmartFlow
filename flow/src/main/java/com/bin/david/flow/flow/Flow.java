@@ -1,11 +1,5 @@
 package com.bin.david.flow.flow;
 
-
-
-
-
-
-
 import com.bin.david.flow.ILifeObservable;
 import com.bin.david.flow.await.Await;
 import com.bin.david.flow.event.ConditionEvent;
@@ -50,10 +44,7 @@ public  class Flow<P,R> implements Event<P, R> {
      * 是否取消
      */
     private boolean isCancel;
-    /**
-     * 处理数据事件
-     */
-    private Event<R,Void> resultEvent;
+
 
     /**
      * 异常事件
@@ -274,9 +265,11 @@ public  class Flow<P,R> implements Event<P, R> {
      * 回调当前数据结果
      * @param resultEvent
      */
-    public Flow<P, R> resultThen(ResultEvent<R> resultEvent) {
-        this.resultEvent = covertEvent(resultEvent);
-        return this;
+    public Flow<R, R> resultThen(ResultEvent<R> resultEvent) {
+        return then((flow, r, await) -> {
+            resultEvent.run(flow,r,null);
+            await.exec(r);
+        });
     }
 
     /**
@@ -412,10 +405,6 @@ public  class Flow<P,R> implements Event<P, R> {
                 if(isCancel()){
                     Log.w(getDesc()+"isCancel");
                     return;
-                }
-                Log.w(getDesc()+"run result:"+r);
-                if(resultEvent != null){
-                    resultEvent.run(this,r,null);
                 }
                 excNext(r);
             });

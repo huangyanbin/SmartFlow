@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                      .catchThen((flow, e) ->
                              System.out.println(e.getMessage()))
                      .on(SingleThread.get())
-                     .finallyThen((flow, await) ->
+                     .finallyThen((flow) ->
                               System.out.println("this is flow end"))
                         .watch(this).start();
                 break;
@@ -95,19 +95,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }).start();
                 break;
             case R.id.btn5: {
-                Flow.create((NoneEvent) (flow, await) ->{
+                Flow.create((NoneEvent) (flow) ->{
                     System.out.println("start");
-                    await.exec();
                 })
                  .on(SingleThread.get())
                  .conditionThen((VoidCondition) () -> false,
-                                Flow.create((NoneEvent) (flow,await) -> {
+                                Flow.create((NoneEvent) (flow) -> {
                                     System.out.println("this is true");
-                                    await.exec();
+
                                 }),
-                                Flow.create((NoneEvent) (flow,await) -> {
+                                Flow.create((NoneEvent) (flow) -> {
                                     System.out.println("this is false");
-                                    await.exec();
+
                                 })).start();
             }
                 break;

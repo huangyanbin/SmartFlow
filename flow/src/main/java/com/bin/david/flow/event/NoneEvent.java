@@ -12,7 +12,10 @@ import com.bin.david.flow.flow.Flow;
 public interface NoneEvent extends Event<Void, Void> {
     @Override
     default void run(Flow flow, Void aVoid, Await<Void> await) {
-        run(flow, null, (VoidAwait) () -> await.exec(null));
+        run(flow);
+        await.exec(null);
+
+
     }
 
 
@@ -21,5 +24,5 @@ public interface NoneEvent extends Event<Void, Void> {
      *
      * @param flow 流
      */
-    void run(Flow flow, VoidAwait await);
+    void run(Flow flow);
 }
