@@ -458,7 +458,7 @@ public  class Flow<P,R> implements Event<P, R> {
         finallyEvent(this);
         Event<FlowException, Void> event = getExceptionEvent(this,useComm);
         if (event != null) {
-            exceptionEvent.run(this,e, null);
+            event.run(this,e, null);
         }
     }
 
